@@ -12,28 +12,26 @@ export default function Header() {
     <AppBar position="static" color="primary">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h6" component="div" sx={{ cursor: "pointer" }}>
-          <Link to="/gallery" style={{ color: "inherit", textDecoration: "none" }}>
+          <Link
+            to="/gallery"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
             Mi Galería
           </Link>
         </Typography>
 
         {token && (
           <Box>
-            <Link to="/upload" style={{ color: "inherit", textDecoration: "none" }}>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/upload"
-                sx={{ mr: 2 }}
-              >
-                Subir Imagen
-              </Button>
+            <Link
+              to="/upload"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Subir Imagen
             </Link>
             <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>
           </Box>
-          
         )}
       </Toolbar>
     </AppBar>

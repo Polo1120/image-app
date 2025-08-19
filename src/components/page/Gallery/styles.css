@@ -1,3 +1,18 @@
-.gallery-container{
-    display: flex;
+.gallery-container {
+    display       : flex;
+    padding-inline: 16px;
+}
+
+.gallery-image {
+    width : 100%;
+    height: auto;
+
+}
+
+
+@media screen and (min-width: 600px) {
+
+    .gallery-container {
+        padding-inline: 32px;
+    }
 }

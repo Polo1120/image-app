@@ -6,6 +6,10 @@ import Header from "./components/layout/header/Header";
 import { JSX, useState, useEffect } from "react";
 import UploadImage from "./components/page/UploadImage/UploadImage";
 import { getUserImages } from "./components/api/images";
+import { Image } from "./components/types/Image";
+import ImageDetail from "./components/page/Gallery/ImageDetail.tsx";
+import theme from "./theme";
+import { ThemeProvider } from "@mui/material/styles";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const { token } = useAuth();
@@ -13,7 +17,7 @@ function PrivateRoute({ children }: { children: JSX.Element }) {
 }
 
 export default function App() {
-  const [images, setImages] = useState<any[]>([]); 
+  const [images, setImages] = useState<Image[]>([]);
 
   const loadImages = async () => {
     try {
@@ -29,41 +33,52 @@ export default function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
 
-          {/* Galería */}
-          <Route
-            path="/gallery"
-            element={
-              <PrivateRoute>
-                <>
-                  <Header />
-                  <Gallery images={images} onReload={loadImages} />
-                </>
-              </PrivateRoute>
-            }
-          />
+            {/* Galería */}
+            <Route
+              path="/gallery"
+              element={
+                <PrivateRoute>
+                  <>
+                    <Header />
+                    <Gallery images={images} />
+                  </>
+                </PrivateRoute>
+              }
+            />
 
-          {/* Subida de imágenes */}
-          <Route
-            path="/upload"
-            element={
-              <PrivateRoute>
-                <>
-                  <Header />
-                  <UploadImage onUpload={loadImages} />
-                </>
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/image/:id"
+              element={
+                <PrivateRoute>
+                  <>
+                    <Header />
+                    <ImageDetail images={images} />
+                  </>
+                </PrivateRoute>
+              }
+            />
 
-          {/* Redirección por defecto */}
-          <Route path="*" element={<Navigate to="/gallery" />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route
+              path="/upload"
+              element={
+                <PrivateRoute>
+                  <>
+                    <Header />
+                    <UploadImage onUpload={loadImages} />
+                  </>
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/gallery" />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

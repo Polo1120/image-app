@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface AuthContextType {
   token: string | null;
@@ -9,7 +16,19 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
+
+  const isTokenExpired = (jwt: string): boolean => {
+    try {
+      const decoded = jwtDecode<JwtPayload>(jwt);
+      const now = Date.now() / 1000;
+      return decoded.exp !== undefined && decoded.exp < now;
+    } catch {
+      return true;
+    }
+  };
 
   const login = (newToken: string) => {
     localStorage.setItem("token", newToken);
@@ -20,6 +39,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     setToken(null);
   };
+
+
+  useEffect(() => {
+    if (token && isTokenExpired(token)) {
+      logout();
+    }
+  }, [token]);
 
   return (
     <AuthContext.Provider value={{ token, login, logout }}>
