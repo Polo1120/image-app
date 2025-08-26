@@ -4,10 +4,10 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#E5E8EB", 
+      main: "#E5E8EB",
     },
     secondary: {
-      main: "#FAFAFA",  
+      main: "#F0F2F5",
     },
     success: {
       main: "#141414",
@@ -21,12 +21,33 @@ const theme = createTheme({
     info: {
       main: "#2196f3",
     },
+
+    text: {
+      primary: "#141414",
+      secondary: "#61758A",
+    },
     background: {
-      default: "#f4f6f8",  
+      default: "#f4f6f8",
+      paper: "#F0F2F5",
     },
   },
   typography: {
-    fontFamily: "Roboto, Arial, sans-serif",
+    fontFamily: "Plus Jakarta Sans, Arial, sans-serif",
+    fontSize: 14,
+    h4: {
+      textTransform: "capitalize",
+      fontSize: "28px",
+      margin: "28px 0 0 0",
+      fontWeight: 500,
+      lineHeight: 1.2,
+    },
+    h6: {
+      textTransform: "capitalize",
+      fontSize: "16px",
+      margin: "24px 0 0 0",
+      fontWeight: "normal",
+      lineHeight: 1.2,
+    },
   },
 });
 
