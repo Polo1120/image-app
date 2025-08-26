@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, DragEvent } from "react";
 import { uploadImage } from "../../services/images";
 import {
   Box,
@@ -10,35 +10,74 @@ import {
 } from "@mui/material";
 
 export default function UploadImage({ onUpload }: { onUpload: () => void }) {
-  const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [dateSpecial, setDateSpecial] = useState("");
-  const [tags, setTags] = useState("");
+  const [form, setForm] = useState({
+    file: null as File | null,
+    preview: null as string | null,
+    title: "",
+    location: "",
+    description: "",
+    dateSpecial: "",
+    tags: "",
+  });
   const [loading, setLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({
+    file: false,
+    title: false,
+    location: false,
+    description: false,
+    dateSpecial: false,
+    tags: false,
+  });
+
+  function handleChange(key: keyof typeof form, value: string | File | null) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function validateFields() {
+    const newErrors = {
+      file: !form.file,
+      title: !form.title.trim(),
+      location: !form.location.trim(),
+      description: !form.description.trim(),
+      dateSpecial: !form.dateSpecial.trim(),
+      tags: !form.tags.trim(),
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(Boolean);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!file) return;
-
+    if (!validateFields()) return;
     setLoading(true);
     try {
       await uploadImage({
-        file,
-        title,
-        location,
-        description,
-        dateSpecial,
-        tags: tags.split(",").map((t) => t.trim()),
+        file: form.file as File,
+        title: form.title,
+        location: form.location,
+        description: form.description,
+        dateSpecial: form.dateSpecial,
+        tags: form.tags.split(",").map((t) => t.trim()),
       });
       onUpload();
-      setFile(null);
-      setTitle("");
-      setLocation("");
-      setDescription("");
-      setDateSpecial("");
-      setTags("");
+      setForm({
+        file: null,
+        preview: null,
+        title: "",
+        location: "",
+        description: "",
+        dateSpecial: "",
+        tags: "",
+      });
+      setErrors({
+        file: false,
+        title: false,
+        location: false,
+        description: false,
+        dateSpecial: false,
+        tags: false,
+      });
     } catch {
       alert("Error al subir la imagen");
     } finally {
@@ -46,81 +85,219 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
     }
   }
 
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const droppedFile = e.dataTransfer.files[0];
+      handleChange("file", droppedFile);
+      handleChange("preview", URL.createObjectURL(droppedFile));
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      handleChange("file", selectedFile);
+      handleChange("preview", URL.createObjectURL(selectedFile));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    handleChange("file", null);
+    handleChange("preview", null);
+  };
+
   return (
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ mt: 3, p: 2, border: "1px dashed #ccc", borderRadius: 2 }}
+      sx={{ mt: 3, p: 2, borderRadius: 2 }}
     >
       <Stack spacing={2} alignItems="center">
-        <Button
-          variant="outlined"
-          component="label"
-          disabled={loading}
-          fullWidth
-        >
-          {file ? "Imagen seleccionada" : "Seleccionar imagen"}
-          <input
-            type="file"
-            hidden
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-          />
-        </Button>
-
-        {file && (
-          <Typography variant="body2" color="text.secondary">
-            {file.name}
-          </Typography>
-        )}
-
         {/* Campos adicionales */}
-        <TextField
-          label="Título"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          fullWidth
-          required
-        />
-        <TextField
-          label="Ubicación"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          label="Descripción"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          fullWidth
-          multiline
-          rows={2}
-        />
-        <TextField
-          label="Fecha especial"
-          type="date"
-          value={dateSpecial}
-          onChange={(e) => setDateSpecial(e.target.value)}
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-        />
-        <TextField
-          label="Tags (separados por coma)"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          fullWidth
-        />
+        <Box width="100%">
+          <Typography variant="subtitle2" textAlign="left">
+            Title
+          </Typography>
+          <TextField
+            type="text"
+            value={form.title}
+            placeholder="Title for image"
+            onChange={(e) => handleChange("title", e.target.value)}
+            fullWidth
+            required
+            error={errors.title}
+            helperText={errors.title ? "This field is required" : ""}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
 
+        <Box width="100%">
+          <Typography variant="subtitle2" textAlign="left">
+            Location
+          </Typography>
+          <TextField
+            placeholder="Location"
+            value={form.location}
+            onChange={(e) => handleChange("location", e.target.value)}
+            fullWidth
+            required
+            error={errors.location}
+            helperText={errors.location ? "This field is required" : ""}
+          />
+        </Box>
+
+        <Box width="100%">
+          <Typography variant="subtitle2" textAlign="left">
+            Description
+          </Typography>
+          <TextField
+            placeholder="Description"
+            value={form.description}
+            onChange={(e) => handleChange("description", e.target.value)}
+            fullWidth
+            multiline
+            rows={2}
+            required
+            error={errors.description}
+            helperText={errors.description ? "This field is required" : ""}
+          />
+        </Box>
+
+        <Box width="100%">
+          <Typography variant="subtitle2" textAlign="left">
+            Special date
+          </Typography>
+          <TextField
+            placeholder="Special date"
+            type="date"
+            value={form.dateSpecial}
+            onChange={(e) => handleChange("dateSpecial", e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            required
+            error={errors.dateSpecial}
+            helperText={errors.dateSpecial ? "This field is required" : ""}
+          />
+        </Box>
+
+        <Box width="100%">
+          <Typography variant="subtitle2" textAlign="left">
+            Tags (comma separated)
+          </Typography>
+          <TextField
+            placeholder="Tags (comma separated)"
+            value={form.tags}
+            onChange={(e) => handleChange("tags", e.target.value)}
+            fullWidth
+            required
+            error={errors.tags}
+            helperText={errors.tags ? "This field is required" : ""}
+          />
+        </Box>
+
+        {/* Drag & Drop Area */}
+        <Box
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          sx={{
+            border: "2px dashed #ccc",
+            borderRadius: 2,
+            p: 4,
+            textAlign: "center",
+            width: "100%",
+            backgroundColor: isDragging ? "rgba(0,0,0,0.03)" : "transparent",
+            transition: "background-color 0.3s ease",
+            boxSizing: "border-box",
+          }}
+        >
+          {!form.preview ? (
+            <>
+              <Typography
+                variant="subtitle1"
+                fontWeight="600"
+                fontSize="18px"
+                gutterBottom
+              >
+                Drag and drop a photo here
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Or click to select a file
+              </Typography>
+
+              <Button
+                variant="outlined"
+                component="label"
+                color="success"
+                sx={{
+                  background: (theme) => theme.palette.secondary.main,
+                  fontSize: "14px",
+                  textTransform: "capitalize",
+                  fontWeight: 600,
+                }}
+              >
+                Select File
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleFileInput}
+                  required
+                />
+              </Button>
+            </>
+          ) : (
+            <Box display="flex" alignItems="center" flexDirection="column">
+              <Box className="image-preview-container-upload">
+                <Box
+                  className="image-preview-upload"
+                  component="img"
+                  src={form.preview}
+                  alt="View preview"
+                  sx={{
+                    width: "100%",
+                    maxWidth: "250px",
+                    maxHeight: 220,
+                    borderRadius: "8px",
+                    objectFit: "contain",
+                  }}
+                />
+              </Box>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleRemoveImage}
+                sx={{ mt: 2 }}
+              >
+                Remove
+              </Button>
+            </Box>
+          )}
+        </Box>
+
+        {/* Upload button */}
         <Button
           type="submit"
           variant="contained"
-          color="primary"
-          disabled={loading || !file}
+          color="success"
+          disabled={
+            loading ||
+            !form.file ||
+            !form.title.trim() ||
+            !form.location.trim() ||
+            !form.description.trim() ||
+            !form.dateSpecial.trim() ||
+            !form.tags.trim()
+          }
           fullWidth
         >
-          {loading ? "Subiendo..." : "Subir"}
+          {loading ? "Uploading..." : "Upload"}
         </Button>
-
         {loading && <CircularProgress size={28} />}
       </Stack>
     </Box>
