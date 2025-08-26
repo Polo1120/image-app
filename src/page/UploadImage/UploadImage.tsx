@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uploadImage } from "../../api/images";
+import { uploadImage } from "../../services/images";
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
-  const [message, setMessage] = useState("");
+  const [description, setDescription] = useState("");
   const [dateSpecial, setDateSpecial] = useState("");
   const [tags, setTags] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         file,
         title,
         location,
-        message,
+        description,
         dateSpecial,
         tags: tags.split(",").map((t) => t.trim()),
       });
@@ -36,7 +36,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
       setFile(null);
       setTitle("");
       setLocation("");
-      setMessage("");
+      setDescription("");
       setDateSpecial("");
       setTags("");
     } catch {
@@ -53,7 +53,12 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
       sx={{ mt: 3, p: 2, border: "1px dashed #ccc", borderRadius: 2 }}
     >
       <Stack spacing={2} alignItems="center">
-        <Button variant="outlined" component="label" disabled={loading} fullWidth>
+        <Button
+          variant="outlined"
+          component="label"
+          disabled={loading}
+          fullWidth
+        >
           {file ? "Imagen seleccionada" : "Seleccionar imagen"}
           <input
             type="file"
@@ -84,9 +89,9 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
           fullWidth
         />
         <TextField
-          label="Mensaje"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          label="Descripción"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           fullWidth
           multiline
           rows={2}
