@@ -26,7 +26,7 @@ export async function uploadImage(data: UploadImageData) {
   
   formData.append("tags", JSON.stringify(data.tags));
 
-  const res = await fetch(`https://image-service-orod.onrender.com/api/images/upload`, {
+  const res = await fetch(`${API_URL}/api/images/upload`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${getToken()}`,

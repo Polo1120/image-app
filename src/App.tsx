@@ -52,6 +52,7 @@ function AppContent() {
     fetchImages();
   }, [token]);
 
+  console.log(images)
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
