@@ -1,7 +1,4 @@
-.search-form-bar{
-    padding: 10px 16px 0;
-}
 
-.search-form-bar fieldset{
+.search-input-bar fieldset{
     border: 1px solid #F0F2F5!important;
 }

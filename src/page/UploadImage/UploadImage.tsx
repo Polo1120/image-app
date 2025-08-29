@@ -7,6 +7,8 @@ import {
   Stack,
   Typography,
   TextField,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 
 export default function UploadImage({ onUpload }: { onUpload: () => void }) {
@@ -61,6 +63,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         tags: form.tags.split(",").map((t) => t.trim()),
       });
       onUpload();
+      setIsDragging(true);
       setForm({
         file: null,
         preview: null,
@@ -114,7 +117,13 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
       onSubmit={handleSubmit}
       sx={{ mt: 3, p: 2, borderRadius: 2 }}
     >
-      <Stack spacing={2} alignItems="center">
+      <Stack
+        spacing={2}
+        alignItems="center"
+        paddingBottom={"3.5rem"}
+        maxWidth={"960px"}
+        margin={"0 auto"}
+      >
         {/* Campos adicionales */}
         <Box width="100%">
           <Typography variant="subtitle2" textAlign="left">
@@ -197,7 +206,6 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
           />
         </Box>
 
-        {/* Drag & Drop Area */}
         <Box
           onDragOver={(e) => {
             e.preventDefault();
@@ -300,6 +308,26 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         </Button>
         {loading && <CircularProgress size={28} />}
       </Stack>
+
+      <Snackbar
+        open={isDragging}
+        autoHideDuration={2000}
+        sx={{ top: "5rem!important" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={() => setIsDragging(false)}
+      >
+        <Alert
+          onClose={() => setIsDragging(false)}
+          severity="success"
+          sx={{
+            width: "100%",
+            backgroundColor: "success.main",
+            color: "info.contrastText",
+          }}
+        >
+          Imagen subida exitosamente
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

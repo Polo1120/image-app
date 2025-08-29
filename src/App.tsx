@@ -1,9 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth, AuthProvider } from "./context/AuthContext";
 import LoginPage from "./page/Login/LoginPage";
 import Gallery from "./page/Gallery/Gallery";
@@ -24,6 +19,7 @@ function PrivateRoute({ children }: { children: JSX.Element }) {
 
 function AppContent() {
   const [images, setImages] = useState<Image[]>([]);
+  const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
   const loadImages = useCallback(async () => {
@@ -41,9 +37,9 @@ function AppContent() {
 
     const fetchImages = async () => {
       try {
-       
         const all = await getUserImages();
         setImages(all);
+        setLoading(false);
       } catch (err) {
         console.error("Error cargando imágenes", err);
       }
@@ -52,7 +48,6 @@ function AppContent() {
     fetchImages();
   }, [token]);
 
-  console.log(images)
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
@@ -63,8 +58,8 @@ function AppContent() {
           <PrivateRoute>
             <>
               <Header />
-              
-              <Gallery images={images} loading={!images.length} />
+
+              <Gallery images={images} loading={loading} />
             </>
           </PrivateRoute>
         }

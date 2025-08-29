@@ -1,26 +1,16 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Box,
-  Button,
-} from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, Box } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import BottomBar from "../../components/bottomBar/BottomBar"; // Asegúrate de crear este componente
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import "./styles.css";
 import SearchBar from "../../components/searchBar/SearchBar";
+import AvatarMenu from "../../components/AvatarMenu/AvatarMenu";
 
 export default function Header() {
-  const { logout, token } = useAuth();
+  const { token } = useAuth();
 
   const { isSm } = useBreakpoint();
-
-  const handleLogout = () => {
-    logout();
-  };
 
   return (
     <>
@@ -31,7 +21,7 @@ export default function Header() {
             justifyContent: { xs: "center", sm: "space-between" },
           }}
         >
-          <Typography variant="h6" component="div" sx={{ cursor: "pointer" }}>
+          <Typography component="div" sx={{ cursor: "pointer" }}>
             <Link
               to="/gallery"
               style={{ color: "inherit", textDecoration: "none" }}
@@ -60,14 +50,14 @@ export default function Header() {
                 ></IconButton>
               ) : (
                 <>
-                  <Button color="inherit" onClick={handleLogout}>
-                    Logout
-                  </Button>
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <SearchBar />
+                    <AvatarMenu />
+                  </Box>
                 </>
               )}
             </Box>
           )}
-          {!isSm && <SearchBar />}
         </Toolbar>
       </AppBar>
       {isSm && <SearchBar />}

@@ -10,7 +10,7 @@ const theme = createTheme({
       main: "#F0F2F5",
     },
     success: {
-      main: "#141414",
+      main: "#111111",
     },
     warning: {
       main: "#ff9800",
@@ -19,7 +19,8 @@ const theme = createTheme({
       main: "#f44336",
     },
     info: {
-      main: "#2196f3",
+      main: "#111111",
+      contrastText: "#fff",
     },
 
     text: {
