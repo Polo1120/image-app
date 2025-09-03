@@ -9,6 +9,8 @@ import {
   Typography,
   Paper,
   Stack,
+  FormLabel,
+  CircularProgress,
 } from "@mui/material";
 
 function LoginForm() {
@@ -18,14 +20,19 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const data = await loginUser(email, password);
       login(data.token);
       navigate("/gallery");
     } catch {
-      setError("Credenciales incorrectas");
+      setError("email or password is incorrect");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,28 +45,45 @@ function LoginForm() {
       bgcolor="#f5f5f5"
       p={2}
     >
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 400, width: "100%" }}>
-        <Typography variant="h5" mb={3} textAlign="center">
-          Iniciar sesión
+      <Paper
+        elevation={3}
+        sx={{ p: 4, maxWidth: 400, width: "80%", position: "relative" }}
+      >
+        <Typography>
+          <b>Welcome!</b>
         </Typography>
-
-        <form onSubmit={handleSubmit}>
+        <Typography>Sign in to continue.</Typography>
+        <Box component="form" marginTop={2} onSubmit={handleSubmit}>
           <Stack spacing={2}>
+            <FormLabel sx={{ color: "text.primary" }}>Email</FormLabel>
             <TextField
-              label="Correo"
               type="email"
               value={email}
+              placeholder="Enter your email"
               onChange={(e) => setEmail(e.target.value)}
               fullWidth
               required
+              sx={{
+                "& .MuiInputBase-input": {
+                  padding: "12px 10px",
+                },
+                marginTop: "10px!important",
+              }}
             />
+            <FormLabel sx={{ color: "text.primary" }}>Password</FormLabel>
             <TextField
-              label="Contraseña"
               type="password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               fullWidth
               required
+              sx={{
+                "& .MuiInputBase-input": {
+                  padding: "12px 10px",
+                },
+                marginTop: "10px!important",
+              }}
             />
 
             {error && (
@@ -68,11 +92,22 @@ function LoginForm() {
               </Typography>
             )}
 
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Iniciar sesión
+            <Button type="submit" variant="contained" color="success" fullWidth>
+              Sign In
             </Button>
           </Stack>
-        </form>
+        </Box>
+        <CircularProgress
+          color="info"
+          size={22}
+          sx={{
+            display: loading ? "flex" : "none",
+            position: "absolute",
+            bottom: "4px",
+            left: "48%",
+            transform: "translateX(-50%)",
+          }}
+        />
       </Paper>
     </Box>
   );

@@ -5,8 +5,10 @@ import {
   Button,
   CircularProgress,
   Stack,
-  Typography,
   TextField,
+  Alert,
+  Snackbar,
+  FormLabel,
 } from "@mui/material";
 
 export default function UploadImage({ onUpload }: { onUpload: () => void }) {
@@ -18,6 +20,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
     description: "",
     dateSpecial: "",
     tags: "",
+    taggedUsernames: "",
   });
   const [loading, setLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -28,6 +31,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
     description: false,
     dateSpecial: false,
     tags: false,
+    taggedUsernames: false,
   });
 
   function handleChange(key: keyof typeof form, value: string | File | null) {
@@ -42,6 +46,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
       description: !form.description.trim(),
       dateSpecial: !form.dateSpecial.trim(),
       tags: !form.tags.trim(),
+      taggedUsernames: !form.taggedUsernames.trim(),
     };
     setErrors(newErrors);
     return !Object.values(newErrors).some(Boolean);
@@ -59,8 +64,10 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         description: form.description,
         dateSpecial: form.dateSpecial,
         tags: form.tags.split(",").map((t) => t.trim()),
+        taggedUsernames: form.taggedUsernames.split(",").map((t) => t.trim()),
       });
       onUpload();
+      setIsDragging(true);
       setForm({
         file: null,
         preview: null,
@@ -69,6 +76,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         description: "",
         dateSpecial: "",
         tags: "",
+        taggedUsernames: "",
       });
       setErrors({
         file: false,
@@ -77,6 +85,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         description: false,
         dateSpecial: false,
         tags: false,
+        taggedUsernames: false,
       });
     } catch {
       alert("Error al subir la imagen");
@@ -114,12 +123,16 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
       onSubmit={handleSubmit}
       sx={{ mt: 3, p: 2, borderRadius: 2 }}
     >
-      <Stack spacing={2} alignItems="center">
+      <Stack
+        spacing={2}
+        alignItems="center"
+        paddingBottom={"3.5rem"}
+        maxWidth={"960px"}
+        margin={"0 auto"}
+      >
         {/* Campos adicionales */}
         <Box width="100%">
-          <Typography variant="subtitle2" textAlign="left">
-            Title
-          </Typography>
+          <FormLabel>Title</FormLabel>
           <TextField
             type="text"
             value={form.title}
@@ -134,9 +147,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         </Box>
 
         <Box width="100%">
-          <Typography variant="subtitle2" textAlign="left">
-            Location
-          </Typography>
+          <FormLabel>Location</FormLabel>
           <TextField
             placeholder="Location"
             value={form.location}
@@ -149,9 +160,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         </Box>
 
         <Box width="100%">
-          <Typography variant="subtitle2" textAlign="left">
-            Description
-          </Typography>
+          <FormLabel>Description</FormLabel>
           <TextField
             placeholder="Description"
             value={form.description}
@@ -166,9 +175,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         </Box>
 
         <Box width="100%">
-          <Typography variant="subtitle2" textAlign="left">
-            Special date
-          </Typography>
+          <FormLabel>Special date</FormLabel>
           <TextField
             placeholder="Special date"
             type="date"
@@ -183,9 +190,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         </Box>
 
         <Box width="100%">
-          <Typography variant="subtitle2" textAlign="left">
-            Tags (comma separated)
-          </Typography>
+          <FormLabel>Tags (comma separated)</FormLabel>
           <TextField
             placeholder="Tags (comma separated)"
             value={form.tags}
@@ -197,7 +202,19 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
           />
         </Box>
 
-        {/* Drag & Drop Area */}
+        <Box width="100%">
+          <FormLabel>Tag Usernames (comma separated)</FormLabel>
+          <TextField
+            placeholder="Tag Usernames (comma separated)"
+            value={form.taggedUsernames}
+            onChange={(e) => handleChange("taggedUsernames", e.target.value)}
+            fullWidth
+            required
+            error={errors.taggedUsernames}
+            helperText={errors.taggedUsernames ? "This field is required" : ""}
+          />
+        </Box>
+
         <Box
           onDragOver={(e) => {
             e.preventDefault();
@@ -217,18 +234,14 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
           }}
         >
           {!form.preview ? (
-            <>
-              <Typography
-                variant="subtitle1"
-                fontWeight="600"
-                fontSize="18px"
-                gutterBottom
-              >
-                Drag and drop a photo here
-              </Typography>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Or click to select a file
-              </Typography>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={1}
+            >
+              <FormLabel>Drag and drop a photo here</FormLabel>
+              <FormLabel>Or click to select a file</FormLabel>
 
               <Button
                 variant="outlined"
@@ -250,7 +263,7 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
                   required
                 />
               </Button>
-            </>
+            </Box>
           ) : (
             <Box display="flex" alignItems="center" flexDirection="column">
               <Box className="image-preview-container-upload">
@@ -280,7 +293,6 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
           )}
         </Box>
 
-        {/* Upload button */}
         <Button
           type="submit"
           variant="contained"
@@ -300,6 +312,26 @@ export default function UploadImage({ onUpload }: { onUpload: () => void }) {
         </Button>
         {loading && <CircularProgress size={28} />}
       </Stack>
+
+      <Snackbar
+        open={isDragging}
+        autoHideDuration={2000}
+        sx={{ top: "5rem!important" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={() => setIsDragging(false)}
+      >
+        <Alert
+          onClose={() => setIsDragging(false)}
+          severity="success"
+          sx={{
+            width: "100%",
+            backgroundColor: "success.main",
+            color: "info.contrastText",
+          }}
+        >
+          Imagen subida exitosamente
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

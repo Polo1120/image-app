@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { TextField, InputAdornment, IconButton, Box } from "@mui/material";
 import "./styles.css";
 
 const getInitialQuery = (search: string) => {
@@ -32,7 +31,13 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="search-form-bar">
+    <Box
+      component="form"
+      sx={{
+        padding: { xs: " 10px 16px 0", sm: 0 },
+      }}
+      onSubmit={handleSubmit}
+    >
       <TextField
         color="secondary"
         size="small"
@@ -46,15 +51,15 @@ export default function SearchBar() {
           background: (theme) => theme.palette.secondary.main,
         }}
         InputProps={{
-          endAdornment: (
-            <InputAdornment position="end" > 
-              <IconButton type="submit" >
-                <SearchIcon />
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconButton className="search-icon-button" sx={{ padding: "0px" }} type="submit">
+               
               </IconButton>
             </InputAdornment>
           ),
         }}
       />
-    </form>
+    </Box>
   );
 }

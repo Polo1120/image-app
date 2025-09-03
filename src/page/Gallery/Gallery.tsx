@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Image } from "../../types/Image";
 import "./styles.css";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import ButtomAdd from "../../components/ButtomAdd/ButtomAdd";
 
 export default function Gallery({
   images,
@@ -12,6 +13,14 @@ export default function Gallery({
   loading?: boolean;
 }) {
   const { isSm } = useBreakpoint();
+
+  if (!loading && images.length === 0) {
+    return (
+      <Box sx={{ padding: 2, textAlign: "center" }}>
+        No hay imágenes para mostrar
+      </Box>
+    );
+  }
 
   if (loading) {
     return (
@@ -28,14 +37,15 @@ export default function Gallery({
     );
   }
 
-  if (!loading && images.length === 0) {
-    return <div>No hay imágenes para mostrar</div>;
-  }
-
   return (
     <div className="gallery-container">
       <Box sx={{ width: "100%" }}>
-        <ImageList variant="masonry" cols={isSm ? 2 : 5} gap={12} sx={{pb: 5}}>
+        <ImageList
+          variant="masonry"
+          cols={isSm ? 2 : 5}
+          gap={12}
+          sx={{ pb: 5 }}
+        >
           {images.map((item) => (
             <ImageListItem key={item._id}>
               <Link to={`/image/${item._id}`} className="gallery-link-item">
@@ -51,6 +61,7 @@ export default function Gallery({
           ))}
         </ImageList>
       </Box>
+      {!isSm && <ButtomAdd />}
     </div>
   );
 }
