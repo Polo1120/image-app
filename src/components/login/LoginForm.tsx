@@ -113,4 +113,4 @@ function LoginForm() {
   );
 }
 
-export { LoginForm };
+export default LoginForm;
