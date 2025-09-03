@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { TextField, InputAdornment, IconButton, Box } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import "./styles.css";
 
 const getInitialQuery = (search: string) => {
@@ -54,8 +53,8 @@ export default function SearchBar() {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <IconButton sx={{ padding: "0px" }} type="submit">
-                <SearchIcon />
+              <IconButton className="search-icon-button" sx={{ padding: "0px" }} type="submit">
+               
               </IconButton>
             </InputAdornment>
           ),

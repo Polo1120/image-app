@@ -14,6 +14,7 @@ code {
     monospace;
 }
 
+.search-icon-button::before,
 .button-add-image::before,
 .bottom-nav-icon-home::before,
 .bottom-nav-icon-upload::before,
@@ -29,7 +30,7 @@ code {
   content: "\e906";
 
 }
-
+.search-icon-button::before,
 .button-add-image::before,
 .image-detail-location::before,
 .bottom-nav-icon-upload::before,
@@ -51,6 +52,10 @@ code {
 
 .bottom-nav-icon-profile::before {
   content: "\e905";
+}
+
+.search-icon-button::before {
+  content: "\e901";
 }
 
 .image-detail-location::before {

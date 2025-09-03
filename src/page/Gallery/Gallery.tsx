@@ -15,7 +15,11 @@ export default function Gallery({
   const { isSm } = useBreakpoint();
 
   if (!loading && images.length === 0) {
-    return <div>No hay imágenes para mostrar</div>;
+    return (
+      <Box sx={{ padding: 2, textAlign: "center" }}>
+        No hay imágenes para mostrar
+      </Box>
+    );
   }
 
   if (loading) {

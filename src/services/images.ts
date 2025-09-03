@@ -10,7 +10,6 @@ function getToken() {
 export async function uploadImage(data: UploadImageData) {
   const formData = new FormData();
 
-  
   Object.entries({
     file: data.file,
     dateSpecial: data.dateSpecial,
@@ -18,6 +17,7 @@ export async function uploadImage(data: UploadImageData) {
     location: data.location,
     description: data.description,
     tags: JSON.stringify(data.tags),
+    taggedUsernames: data.taggedUsernames.join(","),
   }).forEach(([key, value]) => {
     formData.append(key, value as string | Blob);
   });

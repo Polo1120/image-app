@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { useAuth, AuthProvider } from "./context/AuthContext";
 import LoginPage from "./page/Login/LoginPage";
 import Gallery from "./page/Gallery/Gallery";
@@ -21,9 +27,11 @@ function AppContent() {
   const [images, setImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
+  const location = useLocation();
 
   const loadImages = useCallback(async () => {
     if (!token) return;
+
     try {
       const data = await getUserImages();
       setImages(data);
@@ -34,6 +42,7 @@ function AppContent() {
 
   useEffect(() => {
     if (!token) return;
+    if (location.pathname === "/upload") return;
 
     const fetchImages = async () => {
       try {
@@ -46,7 +55,7 @@ function AppContent() {
     };
 
     fetchImages();
-  }, [token]);
+  }, [token, location.pathname]);
 
   return (
     <Routes>

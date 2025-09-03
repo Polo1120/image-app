@@ -9,6 +9,7 @@ import {
   Typography,
   Paper,
   Stack,
+  FormLabel,
   CircularProgress,
 } from "@mui/material";
 
@@ -46,29 +47,43 @@ function LoginForm() {
     >
       <Paper
         elevation={3}
-        sx={{ p: 4, maxWidth: 400, width: "100%", position: "relative" }}
+        sx={{ p: 4, maxWidth: 400, width: "80%", position: "relative" }}
       >
-        <Typography variant="h5" mb={3} textAlign="center">
-          Iniciar sesión
+        <Typography>
+          <b>Welcome!</b>
         </Typography>
-
-        <Box component="form" onSubmit={handleSubmit}>
+        <Typography>Sign in to continue.</Typography>
+        <Box component="form" marginTop={2} onSubmit={handleSubmit}>
           <Stack spacing={2}>
+            <FormLabel sx={{ color: "text.primary" }}>Email</FormLabel>
             <TextField
-              label="Correo"
               type="email"
               value={email}
+              placeholder="Enter your email"
               onChange={(e) => setEmail(e.target.value)}
               fullWidth
               required
+              sx={{
+                "& .MuiInputBase-input": {
+                  padding: "12px 10px",
+                },
+                marginTop: "10px!important",
+              }}
             />
+            <FormLabel sx={{ color: "text.primary" }}>Password</FormLabel>
             <TextField
-              label="Contraseña"
               type="password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               fullWidth
               required
+              sx={{
+                "& .MuiInputBase-input": {
+                  padding: "12px 10px",
+                },
+                marginTop: "10px!important",
+              }}
             />
 
             {error && (
@@ -77,14 +92,14 @@ function LoginForm() {
               </Typography>
             )}
 
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Iniciar sesión
+            <Button type="submit" variant="contained" color="success" fullWidth>
+              Sign In
             </Button>
           </Stack>
         </Box>
         <CircularProgress
           color="info"
-          size={24}
+          size={22}
           sx={{
             display: loading ? "flex" : "none",
             position: "absolute",

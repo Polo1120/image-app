@@ -4,6 +4,7 @@ type ImageBase = {
   location: string;
   description: string;
   tags: string[];
+  taggedUsernames: string[];
 };
 
 export type Image = ImageBase & {
