@@ -34,7 +34,7 @@ export default function SearchBar() {
     <Box
       component="form"
       sx={{
-        padding: { xs: " 10px 16px 0", sm: 0 },
+        padding: { xs: " 10px 16px 0", sm: 0},
       }}
       onSubmit={handleSubmit}
     >
