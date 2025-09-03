@@ -69,7 +69,6 @@ export const HeaderMobile = () => {
         </Toolbar>
       </AppBar>
 
-    
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <Box
           p={2}
